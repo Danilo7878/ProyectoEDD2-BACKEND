@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 
 
 const app = express();
-const indexRoutes = require()
+const indexRoutes = require('./routes/index.js');
 
 //settings
 app.set('port', process.env.PORT || 3000);
