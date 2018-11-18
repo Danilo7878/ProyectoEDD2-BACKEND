@@ -1,5 +1,5 @@
 module.exports = function(){
-    var db = this.require('../libs/db-connection')();
+    var db = require('../libs/db-connection')();
     var Schema = require('mongoose').Schema;
 
     var User = Schema({
