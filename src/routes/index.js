@@ -3,7 +3,9 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const User = require('../models/user');
+const Message = require('../models/message');
 
+//peticiones de usuario
 router.post('/signup', (req, res) => {
   const user = new User({
     _id: new mongoose.Types.ObjectId(),
@@ -23,21 +25,12 @@ router.post('/signup', (req, res) => {
   });
 });
 
-router.get('/users/:Id', (req, res)=>{
-  const id = req.params.Id
-  User.findById(id)
-    .exec()
-    .then(doc => {
-      if(doc){
-        res.status(200).json(doc);
-      } else {
-        res.status(404).json({message:"Not found"})
-      }
-      res.status(200).json(doc);
-    })
-    .catch(err => {
-    res.status(500).json({error: err});
-    });
+router.get('/login',(req,res) =>{
+
+});
+
+router.delete('/deleteCount', (req, res)=>{
+
 });
 
 router.get("/users", (req,res) =>{
@@ -50,4 +43,40 @@ router.get("/users", (req,res) =>{
     res.status(500).json({error:err});
   });
 });
+
+//peticiones de mensajes
+
+router.get("/Conversation", (req, res)=>{
+const emisor = req.body.emisor;
+const receptor = req.body.receptor;
+Message.find($or[{"emisor":emisor, "receptor":receptor},{"emisor":receptor,"receptor":emisor}]).exec()
+.then(docs =>{
+  if (!(docs.length === 0)){
+    res.status(200).json({messages:docs});
+  }else{
+    res.status(404).json({messages:"not found messages"});
+  }
+})
+.catch(err => {
+res.status(500).json({error:err});
+});
+});
+
+router.post("/NewMessage", (req,res) =>{
+const message = new Message({
+  _id: mongoose.Types.ObjectId,
+  emisor: req.body.emisor,
+  receptor: req.body.receptor,
+  message: req.body.message
+});
+message
+.save()
+.then(result => {
+  res.status(201).json({SentMessage:message});
+})
+.catch(err => {
+  res.status(500).json({error:err});
+});
+});
+
 module.exports = router;
