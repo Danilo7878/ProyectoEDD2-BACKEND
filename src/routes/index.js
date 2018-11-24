@@ -65,7 +65,7 @@ router.post('/login',(req,res) =>{
                   username: user[0].username
               }, "este-es-un-token",
               {
-                  expiresIn: "1h"
+                  expiresIn: "2h"
               });
               return res.status(200).json({token: token});
           }
@@ -113,12 +113,9 @@ router.get("/conversation", Autent, (req, res)=>{
 Message.find()
 .select('emisor receptor mensaje -_id')
 .then(docs =>{
-  if (!(docs.length === 0)){
     res.status(200).json(docs);
-  }else{
-    res.status(404).json({messages:"not found messages"});
   }
-})
+)
 .catch(err => {
 res.status(500).json({error:err});
 });
