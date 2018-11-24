@@ -37,7 +37,7 @@ router.get("/users", (req,res) =>{
   User.find
   .exec()
   .then(docs => {
-    res.status(200).json({users:docs});
+    res.status(200).json(docs);
   })
   .catch(err =>{
     res.status(500).json({error:err});
@@ -46,13 +46,13 @@ router.get("/users", (req,res) =>{
 
 //peticiones de mensajes
 
-router.get("/Conversation", (req, res)=>{
+router.get("/conversation", (req, res)=>{
 const emisor = req.body.emisor;
 const receptor = req.body.receptor;
-Message.find($or[{"emisor":emisor, "receptor":receptor},{"emisor":receptor,"receptor":emisor}]).exec()
+Message.find({$or:[{"emisor":emisor, "receptor":receptor},{"emisor":receptor,"receptor":emisor}]}).exec()
 .then(docs =>{
   if (!(docs.length === 0)){
-    res.status(200).json({messages:docs});
+    res.status(200).json(docs);
   }else{
     res.status(404).json({messages:"not found messages"});
   }
@@ -62,12 +62,12 @@ res.status(500).json({error:err});
 });
 });
 
-router.post("/NewMessage", (req,res) =>{
+router.post("/newMessage", (req,res) =>{
 const message = new Message({
-  _id: mongoose.Types.ObjectId,
+  _id: new mongoose.Types.ObjectId(),
   emisor: req.body.emisor,
   receptor: req.body.receptor,
-  message: req.body.message
+  mensaje: req.body.mensaje
 });
 message
 .save()
