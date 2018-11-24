@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken')
 
 const User = require('../models/user');
 const Message = require('../models/message');
+const Autent = require('../models/Autent');
 
 //peticiones de usuario
 router.post('/signup', (req, res) => {
@@ -64,7 +65,7 @@ router.post('/login',(req,res) =>{
                   username: user[0].username
               }, "este-es-un-token",
               {
-                  expiresIn: "60"
+                  expiresIn: "1h"
               });
               return res.status(200).json({token: token});
           }
@@ -96,7 +97,7 @@ router.get("/profile/:username", (req,res) =>{
   );
 });
 
-router.get("/users", (req,res) =>{
+router.get("/users", Autent, (req,res) =>{
   User.find()
   .then(docs => {
     res.status(200).json(docs);
@@ -108,7 +109,7 @@ router.get("/users", (req,res) =>{
 
 //peticiones de mensajes
 
-router.get("/conversation", (req, res)=>{
+router.get("/conversation", Autent, (req, res)=>{
 Message.find()
 .select('emisor receptor mensaje -_id')
 .then(docs =>{
@@ -123,7 +124,7 @@ res.status(500).json({error:err});
 });
 });
 
-router.post("/newMessage", (req,res) =>{
+router.post("/newMessage", Autent, (req,res) =>{
 const message = new Message({
   _id: new mongoose.Types.ObjectId(),
   emisor: req.body.emisor,
